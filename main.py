@@ -1033,7 +1033,7 @@ def build_page():
     # ---- masthead ----
     draw_text_centered(512, 26, "THE WORLD IN ONE DAY", 4, INK)
     draw_text_centered(512, 64, "TUESDAY 24 NOVEMBER 2026", 6, RED)
-    draw_text_centered(512, 120, "MORNING EDITION - STORIES VERIFIED TO 03:00 UTC - ALL TIMES LOCAL", 2, GREY)
+    draw_text_centered(512, 120, "FULL-DAY EDITION - STORIES VERIFIED TO 24 NOV 23:59 UTC - ALL TIMES LOCAL", 2, GREY)
     hline(24, 140, 976, INK, 4)
     hline(24, 147, 976, INK, 1)
 
@@ -1041,11 +1041,11 @@ def build_page():
     draw_text(24, 156, "THE DAY IN LOCAL TIME", 2, RED)
     tl = [
         ("08:00 SGT", "SG GDP +6.1%"),
-        ("08:30 JST", "JAPAN PMI 53.7"),
         ("09:25 KST", "KOSPI +5.9%"),
+        ("10:00 CET", "IFO 90.6"),
         ("10:00 IST", "TRAIN DUE"),
-        ("10:30 CET", "GERMANY IFO DUE"),
         ("13:00 IST", "RETURN TRAIN"),
+        ("16:00 EST", "DOW +0.9%"),
     ]
     for i, (t, ev) in enumerate(tl):
         col = i % 3
@@ -1064,13 +1064,26 @@ def build_page():
     draw_kospi_chart(24, 336, 472, 72)
     draw_para(24, 420, "KOSPI jumps 5.9% as chip stocks lead the rebound.", 472, 3, INK)
     tag(24, 486, "SEOUL ECONOMIC DAILY - CONFIRMED")
-    # lead 2: Singapore
-    draw_text(528, 232, "ECONOMY - SINGAPORE", 2, RED)
-    draw_text(528, 254, "SINGAPORE LIFTS ITS", 4, INK)
-    draw_text(528, 296, "OUTLOOK", 4, INK)
-    draw_sg_bars(528, 340, 472, 72)
-    draw_para(528, 420, "Q3 growth of 6.1% beats forecasts.", 472, 3, INK)
-    tag(528, 486, "REUTERS - CONFIRMED")
+    # lead 2: US market reversal
+    draw_text(528, 232, "ECONOMY - UNITED STATES", 2, RED)
+    draw_text(528, 254, "RALLY REVERSES ON WALL ST", 3, INK)
+    draw_text(528, 306, "NASDAQ -1.5%, S&P -0.5%, DOW +0.9%", 2, INK)
+    # US reversal chart: rises on Monday's rally, then falls on Tuesday.
+    # Drawn inline with primitives (the two stock chart helpers carry
+    # hardcoded KOSPI / Singapore labels, which would be wrong here).
+    fill_rect(528, 340, 472, 72, WHITE)
+    rect_outline(528, 340, 472, 72, INK, 1)
+    for gy in (340 + 72 // 3, 340 + 2 * 72 // 3):
+        draw_line(528 + 4, gy, 528 + 472 - 4, gy, LIGHT, 1)
+    pts = [(528 + 8, 340 + 72 - 20), (528 + 472 // 4, 340 + 72 - 34),
+           (528 + 472 // 2, 340 + 18), (528 + 3 * 472 // 4, 340 + 72 - 30),
+           (528 + 472 - 10, 340 + 72 - 16)]
+    for i in range(len(pts) - 1):
+        draw_line(pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1], RED, 3)
+    draw_text(528 + 8, 340 + 72 - 16, "MON RALLY", 2, GREY)
+    draw_text(528 + 472 - 110, 340 + 2, "TUE -1.5%", 2, RED)
+    draw_para(528, 420, "Nvidia -6% after +31% on Huang's return.", 472, 3, INK)
+    tag(528, 486, "INVESTOPEDIA - CONFIRMED")
     hline(24, 500, 976, INK, 1)
 
     # ---- train band ----
@@ -1084,18 +1097,18 @@ def build_page():
 
     # ---- small stories ----
     small = [
-        ("JAPAN FACTORIES UP",
-         "Manufacturing PMI 53.7; services 50.5.",
+        ("SINGAPORE LIFTS OUTLOOK",
+         "Q3 growth of 6.1% beats forecasts.",
          "REUTERS", draw_icon_factory),
-        ("TOKYO BACK AFTER ROUT",
-         "Nikkei back after Friday's 5.1% fall.",
-         "ASIA DAILY", draw_icon_sun),
-        ("BANGKOK FUEL MARCH",
-         "1,000 plan a 16-km march to refinery.",
-         "THAI MEDIA", draw_icon_megaphone),
-        ("LISBON RALLY TODAY",
-         "Unions rally as MPs vote on budget.",
-         "CGTP", draw_icon_parliament),
+        ("GERMANY IFO 90.6",
+         "Morale up 7th month, best since May 2023.",
+         "IFO", draw_icon_parliament),
+        ("GAZA STRIKE",
+         "Hamas security chief killed in Gaza.",
+         "REUTERS", draw_icon_megaphone),
+        ("HORMUZ TANKERS HIT",
+         "Three tankers struck; oil +2.35%.",
+         "BARCHART", draw_icon_sun),
     ]
     for i, (head, body, src, icon) in enumerate(small):
         x = 24 + i * 246
@@ -1113,12 +1126,12 @@ def build_page():
     also = [
         "1. SEOUL: SK hynix chief bought shares.",
         "2. TOKYO: Yen near 159 per dollar.",
-        "3. SINGAPORE: Led by trade and factories.",
-        "4. JANAKPUR: Return train leaves at 1pm.",
-        "5. MUMBAI: Shut for Guru Nanak Jayanti.",
+        "3. JANAKPUR: Return train leaves at 1pm.",
+        "4. MUMBAI: Shut for Guru Nanak Jayanti.",
+        "5. BERLIN: Ifo 90.6, best since May 2023.",
         "6. BANGKOK: 1,000 plan a 16-km fuel march.",
         "7. LISBON: Unions rally as budget looms.",
-        "8. FRANKFURT: Ifo survey due 10:30 CET.",
+        "8. NEW YORK: Sanofi buys Insmed for $41B.",
     ]
     yy = 794
     for item in also:
@@ -1128,8 +1141,8 @@ def build_page():
 
     # ---- date check footer ----
     draw_text(24, 950, "DATE CHECK - NOT TODAY, LEFT OUT ON PURPOSE", 2, RED)
-    draw_text(24, 970, "COP31 COLLAPSES - 22 NOV / MERKURY SUNK - 22 NOV / EU SANCTIONS - 23 NOV", 2, INK)
-    draw_text(24, 988, "VANUATU QUAKE - 23 NOV / DELTA FLIGHTS - 22 NOV / ICJ MYANMAR - 19 NOV", 2, INK)
+    draw_text(24, 970, "HUANG REINSTATED - 23 NOV / WOMEN'S WORLD CUP - 23 NOV / EU SANCTIONS - 23 NOV", 2, INK)
+    draw_text(24, 988, "COP31 COLLAPSES - 22 NOV / VANUATU QUAKE - 23 NOV / GOMEZ RESIGNS - 23 NOV", 2, INK)
 
 
 if __name__ == "__main__":
